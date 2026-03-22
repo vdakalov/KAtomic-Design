@@ -1,0 +1,83 @@
+Levels are stored in level sets. Level set has a simple ini-file format which includes:
+
+1. Header
+
+[LevelSet]
+Name=KAtomic levels
+Description=This is the additional collection of KAtomic levels.
+Author=Mr. Foo Bar
+AuthorEmail=foo@bar.mr
+LevelCount=27
+
+Fields Name and LevelCount are required
+
+2. Levels description
+
+Each level described by a separate ini-file group entry named [LevelNNN] where NNN is level number, for example:
+
+[Level1]
+Name=Water
+atom_1=1-c
+atom_2=3-cg
+atom_3=1-g
+feld_00=...............
+feld_01=...............
+feld_02=...............
+feld_03=..###########..
+feld_04=..#..#......#..
+feld_05=..#.3#......#..
+feld_06=..#.##......#..
+feld_07=..#.#..#.####..
+feld_08=..#....#.2..#..
+feld_09=..###.#.....#..
+feld_10=..#1....#...#..
+feld_11=..###########..
+feld_12=...............
+feld_13=...............
+feld_14=...............
+mole_0=123
+
+Explanation of level description format:
+(could be improved, currently please read levels/default_levels.dat for examples)
+
+atom_1=2-bdD
+
+Here's how to decode that.
+Atoms are the chars that go before dash,
+Bonds are the chars that go after dash.
+
+Atoms:
+1=H
+2=C
+3=O
+4=N
+5=S
+6=F
+7=Cl
+8=Br
+9=P
+0=J
+o=Crystal
+E,F,G,H,I,J,K,L - flasks with ranging fullness, E - being an empty flask, L - full flask.
+A=horizontal connector
+B=slash-like connector
+C=vertical connector
+D=backslash-like connector
+
+Bonds:
+a=single top
+b=single top-right
+c=single right
+d=single bot-right
+e=single bottom
+f=single bot-left
+g=single left
+h=single top-left
+A=double top
+B=double right
+C=double bottom
+D=double left
+E=triple top
+F=triple right
+G=triple bottom
+H=triple left
