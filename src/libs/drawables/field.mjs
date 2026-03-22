@@ -1,73 +1,18 @@
-import { Renderer } from '../render.mjs';
-
-/**
- * Control cell info
- */
-export class Cell {
-
-  /**
-   *
-   * @param {number} index
-   */
-  constructor(index) {
-
-    /**
-     *
-     * @type {number}
-     * @readonly
-     */
-    this.index = index;
-
-    /**
-     *
-     * @type {number}
-     * @readonly
-     */
-    this.row = 0;
-
-    /**
-     *
-     * @type {number}
-     * @readonly
-     */
-    this.column = 0;
-
-    /**
-     *
-     * @type {number}
-     * @readonly
-     */
-    this.x = 0;
-
-    /**
-     *
-     * @type {number}
-     * @readonly
-     */
-    this.y = 0;
-  }
-}
+import Drawable from '../drawable.mjs';
 
 /**
  * Control game field and sync it with board image
  */
-export default class FieldRenderer extends Renderer {
+export default class FieldDrawable extends Drawable {
 
   /**
    *
-   * @param {BoardRenderer} board
+   * @param {Application} application
    * @param {number} [rows=15]
    * @param {number} [columns=15]
    */
-  constructor(board, rows = 15, columns = 15) {
-    super();
-
-    /**
-     *
-     * @type {BoardRenderer}
-     * @readonly
-     */
-    this.board = board;
+  constructor(application, rows = 15, columns = 15) {
+    super(application);
 
     /**
      *
@@ -88,7 +33,7 @@ export default class FieldRenderer extends Renderer {
      * @type {RectsEnteringResult}
      * @private
      */
-    this.en = Renderer.createInitialRectsEnteringResult();
+    this.en = Drawable.createInitialRectsEnteringResult();
 
     /**
      * Relative field margin
@@ -115,32 +60,33 @@ export default class FieldRenderer extends Renderer {
     this.fieldWidth = 0.7 - this.fieldLeftPadding - this.fieldMargin;
 
     /**
+     * @typedef {Object} FieldRendererCell
+     * @property {number} row
+     * @property {number} column
+     * @property {number} x
+     * @property {number} y
+     */
+    /**
      *
-     * @type {Cell[]}
+     * @type {FieldRendererCell[]}
      * @readonly
      */
     this.cells = new Array(this.rows * this.columns)
       .fill(null)
-      .map((value, index) => new Cell(index));
+      .map(() => ({ row: -1, column: -1, x: -1, y: -1 }));
 
     /**
      *
      * @type {number}
      */
     this.cellSize = 0;
-
-    /**
-     * Cell index for highlight
-     * @type {number}
-     */
-    this.highlighted = -1;
   }
 
   /**
    * Returns cell by specified point position
    * @param {number} x
    * @param {number} y
-   * @returns {Cell|undefined}
+   * @returns {FieldRendererCell|undefined}
    */
   getCellByPoint(x, y) {
     if (x >= this.en.ix && this.en.ix + this.en.iwp > x && y >= this.en.iy && this.en.iy + this.en.iwp > y) {
@@ -159,12 +105,13 @@ export default class FieldRenderer extends Renderer {
    * @param {number} delay
    * @returns {void}
    */
-  draw(c, delay) {
+  _draw(c, delay) {
+    const board = this.application.board;
     // main board field position and size
-    const fx = this.board.x + (this.board.width * this.fieldLeftPadding);
-    const fy = this.board.y + (this.board.height * this.fieldMargin * 2);
-    const fw = (this.board.width * this.fieldWidth);
-    const fh = this.board.height - (this.board.height * (this.fieldMargin * 4));
+    const fx = board.x + (board.width * this.fieldLeftPadding);
+    const fy = board.y + (board.height * this.fieldMargin * 2);
+    const fw = (board.width * this.fieldWidth);
+    const fh = board.height - (board.height * (this.fieldMargin * 4));
 
     // define cell size and cells rect sizes
     this.cellSize = Math.min(fw / this.columns, fh / this.rows);

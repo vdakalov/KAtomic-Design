@@ -1,9 +1,9 @@
+
 /**
  * @abstract
  * @constructor
- * @property {boolean} [enabled=true] Should be rendered
  */
-export class Renderer {
+export default class Drawable {
 
   /**
    * Creates and returns initial value of the object
@@ -11,6 +11,28 @@ export class Renderer {
    */
   static createInitialRectsEnteringResult() {
     return { op: 0, owp: 0, ohp: 0, iwp: 0, ihp: 0, ix: 0, iy: 0 };
+  }
+
+  /**
+   *
+   * @param {Application} application
+   * @param {boolean} [enabled=true]
+   */
+  constructor(application, enabled = true) {
+    /**
+     *
+     * @type {Application}
+     * @readonly
+     */
+    this.application = application;
+
+    /**
+     * Should be rendered
+     * @type {boolean}
+     */
+    this.enabled = enabled;
+
+    this.application.scene.push(this);
   }
 
   /**
@@ -57,47 +79,20 @@ export class Renderer {
 
   /**
    *
+   * @param {number} delay
+   * @returns {void}
+   */
+  draw(delay) {
+    this._draw(this.application.canvas.context, delay);
+  }
+
+  /**
+   *
    * @param {CanvasRenderingContext2D} c
    * @param {number} delay
+   * @returns {void}
+   * @protected
    * @abstract
    */
-  draw(c, delay) {}
-}
-
-/**
- * @type {Array<Renderer|Renderer[]>}
- */
-export default class Render extends Array {
-
-  /**
-   *
-   * @param {Renderer} renderer
-   * @param {CanvasRenderingContext2D} c
-   * @param {number} delay
-   * @returns {void}
-   * @private
-   */
-  proc(renderer, c, delay) {
-    if (renderer.enabled !== false) {
-      renderer.draw(c, delay);
-    }
-  }
-
-  /**
-   *
-   * @param {CanvasRenderingContext2D} c
-   * @param {number} delay
-   * @returns {void}
-   */
-  draw(c, delay) {
-    for (const item of this) {
-      if (Array.isArray(item)) {
-        for (const sub of item) {
-          this.proc(sub, c, delay);
-        }
-      } else {
-        this.proc(item, c, delay);
-      }
-    }
-  }
+  _draw(c, delay) {}
 }

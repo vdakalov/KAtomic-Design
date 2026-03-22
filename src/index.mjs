@@ -1,11 +1,9 @@
 import Canvas from './libs/canvas.mjs';
 import Raf from './libs/raf.mjs';
-import Render from './libs/render.mjs';
-import BoardRenderer from './libs/renderers/board.mjs';
-import FieldRenderer from './libs/renderers/field.mjs';
-import LevelRenderer from './libs/renderers/level.mjs';
-import DefaultLevelsAsset from './assets/levels/default.mjs';
-import SpriteImageAsset from './assets/images/sprite.mjs';
+import Scene from './libs/scene.mjs';
+import BoardDrawable from './libs/drawables/board.mjs';
+import FieldDrawable from './libs/drawables/field.mjs';
+import LevelDrawable from './libs/drawables/level.mjs';
 
 export default class Application {
   constructor() {
@@ -15,7 +13,7 @@ export default class Application {
      * @type {Canvas}
      * @readonly
      */
-    this.canvas = new Canvas();
+    this.canvas = new Canvas(this);
 
     /**
      *
@@ -26,56 +24,37 @@ export default class Application {
 
     /**
      *
-     * @type {Render}
+     * @type {Scene}
      * @readonly
      */
-    this.render = new Render();
+    this.scene = new Scene(this);
 
     /**
      *
-     * @type {BoardRenderer}
+     * @type {BoardDrawable}
      * @readonly
      */
-    this.board = new BoardRenderer();
+    this.board = new BoardDrawable(this);
 
     /**
      *
-     * @type {FieldRenderer}
+     * @type {FieldDrawable}
      * @readonly
      */
-    this.field = new FieldRenderer(this.board);
+    this.field = new FieldDrawable(this);
 
     /**
      *
-     * @type {LevelRenderer}
+     * @type {LevelDrawable}
      * @readonly
      */
-    this.level = new LevelRenderer(this.field);
+    this.level = new LevelDrawable(this);
 
-    // register board renderer
-    this.render.push(
-      this.board,
-      this.field,
-      this.level);
-
-    // register raf handler
-    this.raf.push(this.update.bind(this));
     // start raf
     this.raf.resume();
 
     // listen for canvas events
     this.canvas.element.addEventListener('mousemove', this.onCanvasMouseMove.bind(this));
-  }
-
-  /**
-   *
-   * @param {number} delay
-   * @returns {void}
-   * @private
-   */
-  update(delay) {
-    this.canvas.adjustSize();
-    this.render.draw(this.canvas.context, delay);
   }
 
   /**

@@ -42,12 +42,16 @@ export default class Canvas {
      * @readonly
      */
     this.element = window.document.createElement('canvas');
+
     /**
      *
      * @type {CanvasRenderingContext2D}
      * @readonly
      */
     this.context = this.element.getContext('2d');
+
+    // listen to window resize event
+    window.addEventListener('resize', this.adjustSize.bind(this));
   }
 
   /**

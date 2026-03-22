@@ -1,7 +1,7 @@
-import { Renderer } from '../render.mjs';
+import Drawable from '../drawable.mjs';
 import BoardImageAsset from '../../assets/images/board.mjs';
 
-export default class BoardRenderer extends Renderer {
+export default class BoardDrawable extends Drawable {
 
   /**
    * Board image offset from left of canvas
@@ -37,11 +37,11 @@ export default class BoardRenderer extends Renderer {
 
   /**
    *
+   * @param {Application} application
    * @param {number} padding Padding for board image in canvas
    */
-  constructor(padding = 0.02) {
-    super();
-    this.enabled = false;
+  constructor(application, padding = 0.02) {
+    super(application, false);
 
     /**
      *
@@ -63,7 +63,7 @@ export default class BoardRenderer extends Renderer {
      * @type {RectsEnteringResult}
      * @private
      */
-    this.en = Renderer.createInitialRectsEnteringResult();
+    this.en = Drawable.createInitialRectsEnteringResult();
   }
 
   /**
@@ -72,8 +72,13 @@ export default class BoardRenderer extends Renderer {
    * @param {number} delay
    * @returns {undefined}
    */
-  draw(c, delay) {
-    this.en = this.enterRects(c.canvas.width, c.canvas.height, this.asset.width, this.asset.height, this.padding);
+  _draw(c, delay) {
+    this.en = this.enterRects(
+      this.application.canvas.width,
+      this.application.canvas.height,
+      this.asset.width,
+      this.asset.height,
+      this.padding);
 
     c.drawImage(this.asset.element,
       0, 0, this.asset.width, this.asset.height,

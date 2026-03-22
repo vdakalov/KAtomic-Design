@@ -1,23 +1,14 @@
-import { Renderer } from '../render.mjs';
+import Drawable from '../drawable.mjs';
 import SpriteImageAsset, { map } from '../../assets/images/sprite.mjs';
 import DefaultLevelsAsset from '../../assets/levels/default.mjs';
 
-export default class LevelRenderer extends Renderer {
+export default class LevelDrawable extends Drawable {
   /**
    *
-   * @param {FieldRenderer} field
+   * @param {Application} application
    */
-  constructor(field) {
-    super();
-
-    this.enabled = false;
-
-    /**
-     *
-     * @type {FieldRenderer}
-     * @readonly
-     */
-    this.field = field;
+  constructor(application) {
+    super(application, false);
 
     /**
      *
@@ -32,8 +23,8 @@ export default class LevelRenderer extends Renderer {
      * @type {DefaultLevelsAsset}
      * @readonly
      */
-    this.levels = new DefaultLevelsAsset('default');
-    this.levels.promise.then(({ levels }) => {
+    this.asset = new DefaultLevelsAsset('default');
+    this.asset.promise.then(({ levels }) => {
         // set level to render
         this.level = levels[4];
       });
@@ -45,13 +36,19 @@ export default class LevelRenderer extends Renderer {
     this.level = undefined;
   }
 
-  draw(c, delay) {
-    const cs = this.field.cellSize;
+  /**
+   *
+   * @param {CanvasRenderingContext2D} c
+   * @param {number} delay
+   * @returns {void}
+   */
+  _draw(c, delay) {
+    const cs = this.application.field.cellSize;
     if (this.level !== undefined) {
       for (const [fri, fr] of this.level.field.entries()) {
         for (const [fci, fc] of fr.value.split('').entries()) {
-          const i = fri * this.field.columns + fci;
-          const cell = this.field.cells[i];
+          const i = fri * this.application.field.columns + fci;
+          const cell = this.application.field.cells[i];
           let x, y, w, h;
           if (fc === '#') {
             [x, y, w, h] = map['#'];
@@ -60,7 +57,8 @@ export default class LevelRenderer extends Renderer {
           } else {
             continue;
           }
-          c.drawImage(this.sprite.element, x, y, w, h, cell.x, cell.y, cs, cs);
+          this.application.canvas.context
+            .drawImage(this.sprite.element, x, y, w, h, cell.x, cell.y, cs, cs);
         }
       }
     }
