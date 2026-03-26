@@ -42,7 +42,7 @@ export const BoundNameBitMap = {
  * @enum {number}
  * @readonly
  */
-export const BondCharBitsMap = {
+export const BoundCharBitsMap = {
   'a': 0b010001, // 'single top',
   'b': 0b010101, // 'single top-right',
   'c': 0b010100, // 'single right',
@@ -98,7 +98,7 @@ class LangProp {
   }
 }
 
-export class Set extends LangProp {
+export class LevelSet extends LangProp {
 
   /**
    *
@@ -150,7 +150,7 @@ export class Set extends LangProp {
   }
 }
 
-export class Bound {
+export class LevelBound {
 
   get single() {
     return this.bits & BoundNameBitMap.Single === BoundNameBitMap.Single;
@@ -180,11 +180,11 @@ export class Bound {
      * @type {number}
      * @readonly
      */
-    this.bits = BondCharBitsMap[this.char];
+    this.bits = BoundCharBitsMap[this.char];
   }
 }
 
-export class Atom {
+export class LevelAtom {
 
   /**
    *
@@ -215,31 +215,16 @@ export class Atom {
 
     /**
      *
-     * @type {Readonly<Bound[]>}
+     * @type {Readonly<LevelBound[]>}
      * @readonly
      */
     this.bounds = bonds
       .split('')
-      .map(char => new Bound(char), 0);
+      .map(char => new LevelBound(char), 0);
   }
 }
 
-export class Field {
-  /**
-   *
-   * @param {string} value
-   */
-  constructor(value) {
-    /**
-     *
-     * @type {string}
-     * @readonly
-     */
-    this.value = value;
-  }
-}
-
-export class Mole {
+export class LevelMole {
   /**
    *
    * @param {string} value
@@ -271,21 +256,35 @@ export class Level extends LangProp {
 
     /**
      *
-     * @type {Object.<string, Atom>}
+     * @type {number}
      * @readonly
      */
-    this.atom = {};
+    this.rows = 0;
 
     /**
      *
-     * @type {Field[]}
+     * @type {number}
+     * @readonly
+     */
+    this.columns = 0;
+
+    /**
+     *
+     * @type {Object.<string, LevelAtom>}
+     * @readonly
+     */
+    this.charAtomsMap = {};
+
+    /**
+     *
+     * @type {string[]}
      * @readonly
      */
     this.field = [];
 
     /**
      *
-     * @type {Mole[]}
+     * @type {LevelMole[]}
      * @readonly
      */
     this.mole = [];
@@ -293,19 +292,21 @@ export class Level extends LangProp {
     for (const [key, value] of Object.entries(data)) {
       if (key.startsWith('atom_')) {
         const char = key.split('_').pop();
-        this.atom[char] = new Atom(value);
+        this.charAtomsMap[char] = new LevelAtom(value);
       } else if (key.startsWith('feld_')) {
         const index = Number.parseInt(key.split('_').pop());
         if (!Number.isInteger(index)) {
           throw new Error(`Unable to parse feld index from key "${key}"`);
         }
-        this.field[index] = new Field(value);
+        this.field.push(...value.split(''));
+        this.columns = value.length;
+        this.rows++;
       } else if (key.startsWith('mole_')) {
         const index = Number.parseInt(key.split('_').pop());
         if (!Number.isInteger(index)) {
           throw new Error(`Unable to parse mole index from key "${key}"`);
         }
-        this.mole[index] = new Mole(value);
+        this.mole[index] = new LevelMole(value);
       }
     }
   }
@@ -335,10 +336,10 @@ export default class Levels {
 
     /**
      *
-     * @type {Set}
+     * @type {LevelSet}
      * @readonly
      */
-    this.set = new Set(this.ini.data['levelset']);
+    this.set = new LevelSet(this.ini.data['levelset']);
 
     /**
      *

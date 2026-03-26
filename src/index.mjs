@@ -3,7 +3,7 @@ import Raf from './libs/raf.mjs';
 import Scene from './libs/scene.mjs';
 import BoardDrawable from './libs/drawables/board.mjs';
 import FieldDrawable from './libs/drawables/field.mjs';
-import LevelDrawable from './libs/drawables/level.mjs';
+import LevelsDrawable from './libs/drawables/levels.mjs';
 
 export default class Application {
   constructor() {
@@ -45,10 +45,16 @@ export default class Application {
 
     /**
      *
-     * @type {LevelDrawable}
+     * @type {LevelsDrawable}
      * @readonly
      */
-    this.level = new LevelDrawable(this);
+    this.levels = new LevelsDrawable(this);
+
+    /**
+     *
+     * @type {number}
+     */
+    this.animationSpeed = 1;
 
     // start raf
     this.raf.resume();

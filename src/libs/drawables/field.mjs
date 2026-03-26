@@ -60,7 +60,7 @@ export default class FieldDrawable extends Drawable {
     this.fieldWidth = 0.7 - this.fieldLeftPadding - this.fieldMargin;
 
     /**
-     * @typedef {Object} FieldRendererCell
+     * @typedef {Object} FieldDrawableCell
      * @property {number} row
      * @property {number} column
      * @property {number} x
@@ -68,7 +68,7 @@ export default class FieldDrawable extends Drawable {
      */
     /**
      *
-     * @type {FieldRendererCell[]}
+     * @type {FieldDrawableCell[]}
      * @readonly
      */
     this.cells = new Array(this.rows * this.columns)
@@ -86,7 +86,7 @@ export default class FieldDrawable extends Drawable {
    * Returns cell by specified point position
    * @param {number} x
    * @param {number} y
-   * @returns {FieldRendererCell|undefined}
+   * @returns {FieldDrawableCell|undefined}
    */
   getCellByPoint(x, y) {
     if (x >= this.en.ix && this.en.ix + this.en.iwp > x && y >= this.en.iy && this.en.iy + this.en.iwp > y) {
