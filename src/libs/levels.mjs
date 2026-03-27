@@ -3,6 +3,16 @@
  * @enum {string}
  * @readonly
  */
+export const CellCharMap = {
+  Empty: '.',
+  Block: '#',
+};
+
+/**
+ *
+ * @enum {string}
+ * @readonly
+ */
 export const AtomCharNameMap = {
   '1': 'H',
   '2': 'C',

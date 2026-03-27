@@ -61,10 +61,15 @@ export default class FieldDrawable extends Drawable {
 
     /**
      * @typedef {Object} FieldDrawableCell
+     * @property {number} index
      * @property {number} row
      * @property {number} column
      * @property {number} x
      * @property {number} y
+     * @property {FieldDrawableCell|undefined} up
+     * @property {FieldDrawableCell|undefined} left
+     * @property {FieldDrawableCell|undefined} right
+     * @property {FieldDrawableCell|undefined} down
      */
     /**
      *
@@ -73,13 +78,39 @@ export default class FieldDrawable extends Drawable {
      */
     this.cells = new Array(this.rows * this.columns)
       .fill(null)
-      .map(() => ({ row: -1, column: -1, x: -1, y: -1 }));
+      .map((_, index) => ({
+        index,
+        row: Math.floor(index / this.columns),
+        column: index % this.columns,
+        x: -1,
+        y: -1,
+        up: undefined,
+        left: undefined,
+        right: undefined,
+        down: undefined
+      }));
 
     /**
      *
      * @type {number}
      */
     this.cellSize = 0;
+
+    // define neighborhood
+    for (const [i, cell] of this.cells.entries()) {
+      if ((i % this.columns) !== 0) {
+        cell.left = this.cells[i - 1];
+      }
+      if (i > this.columns - 1) {
+        cell.up = this.cells[i - this.columns];
+      }
+      if ((i % this.columns) !== this.columns - 1) {
+        cell.right = this.cells[i + 1];
+      }
+      if (this.cells.length - this.columns > i) {
+        cell.down = this.cells[i + this.columns];
+      }
+    }
   }
 
   /**
@@ -159,15 +190,8 @@ export default class FieldDrawable extends Drawable {
         y += this.cellSize;
       }
       const cell = this.cells[i];
-      cell.row = r;
-      cell.column = C;
       cell.x = x;
       cell.y = y;
-
-      // if (this.highlighted === i) {
-      //   c.fillStyle = 'rgba(255, 255, 255, 0.2)';
-      //   c.fillRect(x, y, this.cellSize, this.cellSize);
-      // }
     }
   }
 }

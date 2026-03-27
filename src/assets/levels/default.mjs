@@ -3,6 +3,7 @@ import Levels from '../../libs/levels.mjs';
 
 /**
  * @property {Levels} value
+ * @property {Promise<Levels>} promise
  */
 export default class DefaultLevelsAsset extends IniAsset {
   constructor(name) {

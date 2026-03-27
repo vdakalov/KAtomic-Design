@@ -4,6 +4,7 @@ import Scene from './libs/scene.mjs';
 import BoardDrawable from './libs/drawables/board.mjs';
 import FieldDrawable from './libs/drawables/field.mjs';
 import LevelsDrawable from './libs/drawables/levels.mjs';
+import ControlDrawable from './libs/drawables/control.mjs';
 
 export default class Application {
   constructor() {
@@ -52,9 +53,23 @@ export default class Application {
 
     /**
      *
+     * @type {ControlDrawable}
+     * @readonly
+     */
+    this.control = new ControlDrawable(this);
+
+    /**
+     *
      * @type {number}
      */
-    this.animationSpeed = 1;
+    this.animationSpeed = 500;
+
+    /**
+     * How long animation should play in seconds
+     * @type {number}
+     * @readonly
+     */
+    this.animationDuration = 0.5;
 
     // start raf
     this.raf.resume();
