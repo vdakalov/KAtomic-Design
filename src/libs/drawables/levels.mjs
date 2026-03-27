@@ -303,6 +303,11 @@ export default class LevelsDrawable extends Drawable {
           const [fx, fy] = la.getAnimatedPosition2(delay, this.application.animationDuration);
           const [x, y, w, h] = map.atom[la.atom.char];
           c.drawImage(this.sprite.element, x, y, w, h, fx, fy, cs, cs);
+
+          for (const bound of la.atom.bounds) {
+            const [x, y, w, h] = map.bound[bound.char];
+            c.drawImage(this.sprite.element, x, y, w, h, fx, fy, cs, cs);
+          }
         }
       }
     }

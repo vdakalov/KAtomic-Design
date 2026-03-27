@@ -29,7 +29,7 @@ export const map = {
   },
   bound: {
     'a': [ 68, 205, 35, 35], // single top
-    'b': [115,  99, 35, 35], // single top-right
+    'b': [115, 205, 35, 35], // single top-right
     'c': [156, 208, 35, 35], // single right
     'd': [198, 211, 35, 35], // single bot-right
     'e': [ 68, 182, 35, 35], // single bottom
